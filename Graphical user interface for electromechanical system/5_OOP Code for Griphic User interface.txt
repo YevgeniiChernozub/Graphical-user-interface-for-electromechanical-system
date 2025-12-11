@@ -1,0 +1,62 @@
+app.Labelnum.Text = ' '; % vymaze citatel TF
+app.Labelden.Text = ' '; % vymaze menovatel TF
+Tsim = app.TsimEditField.Value;
+f0 = app.f_streduEditField.Value;
+del = app.DeltaEditField.Value;
+del = del/100;
+g1=3.3487; 
+g2=0.7117; 
+g3=3.3487; 
+R=50;
+L1 = (g1*R)/(2*pi*f0*del); 
+L2 = (R*del)/(g2*2*pi*f0); 
+L3 = (g3*R)/(2*pi*f0*del); 
+C1 = del/(g1*R*2*pi*f0); 
+C2 = g2/(R*2*pi*f0*del); 
+C3 = del/(g3*R*2*pi*f0); 
+num = [C1*C3*L2*R 0 0 0]
+den = [C1*C2*C3*L1*L2*L3 C1*C2*C3*L1*L2*R+C1*C2*C3*L2*L3*R C1*C2*L1*L2+C1*C3*L1*L2+C1*C3*L1*L3+C1*C3*L2*L3+C2*C3*L2*L3+C1*C2*C3*L2*R*R C1*C3*L1*R+C1*C3*L2*R+C2*C3*L2*R+C1*C2*L2*R+C1*C3*L2*R+C1*C3*L3*R C1*L1+C1*L2+C2*L2+C3*L2+C3*L3+C1*C3*R*R C3*R+C1*R 1]
+num=double(num);
+den=double(den);
+num=num/den(end);
+den=den/den(end);
+app.Labelnum.Text = [num2str(num(1)),'s^3'];
+app.Labelden.Text = [num2str(den(1)),'s^6 + ',num2str(den(2)),'s^5 + ',num2str(den(3)),'s^4 + ',num2str(den(4)),'s^3 + ',num2str(den(5)),'s^2 + ',num2str(den(6)),'^s + ',num2str(den(7))];
+app.C1Label.Text = ' ';
+app.C2Label.Text = ' ';
+app.C3Label.Text = ' ';
+app.L1Label.Text = ' ';
+app.L2Label.Text = ' ';
+app.L3Label.Text = ' ';
+app.C1Label.Text = sprintf('C1 = %.3e F',C1);
+app.C2Label.Text = sprintf('C2 = %.3e F',C2);
+app.C3Label.Text = sprintf('C3 = %.3e F',C3);
+app.L1Label.Text = sprintf('L1 = %.3e H',L1);
+app.L2Label.Text = sprintf('L2 = %.3e H',L2);
+app.L3Label.Text = sprintf('L3 = %.3e H',L3);
+zeros=zero(tf(num,den));
+poles=pole(tf(num,den));
+format shortG
+p1=round(poles(1)); p1 = p1/100000;p1=round(p1,3);
+p1=num2str(p1); p1=sprintf('p1 = %s e5',p1);
+p2=round(poles(2)); p2 = p2/100000; p2=round(p2,3);
+p2=num2str(p2); p2=sprintf('p2 = %s e5',p2);
+p3=round(poles(3)); p3 = p3/100000;p3=round(p3,3);
+p3=num2str(p3); p3=sprintf('p3 = %s e5',p3);
+p4=round(poles(4)); p4 = p4/100000;p4=round(p4,3);
+p4=num2str(p4); p4=sprintf('p4 = %s e5',p4);
+p5=round(poles(5)); p5 = p5/100000;p5=round(p5,3);
+p5=num2str(p5); p5=sprintf('p5 = %s e5',p5);
+p6=round(poles(6)); p6 = p6/100000;p6=round(p6,3);
+n1=round(zeros(1)*100)/100; n1=num2str(n1); n1=sprintf('z1 = %s',n1); 
+n2=round(zeros(2)*100)/100; n2=num2str(n2); n2=sprintf('z2 = %s',n2); 
+n3=round(zeros(3)*100)/100; n3=num2str(n3); n3=sprintf('z3 = %s',n3); 
+G=tf(num,den);
+t = linspace(0,Tsim);
+plot(app.UIAxes,t,y,"LineWidth",3,'Color','r');
+app.UIAxes.XLim = [0 Tsim];
+ % Graf pre bode
+wmin = app.wminEditField.Value;
+wmax = app.wmaxEditField.Value;
+[mag,phase,wout] = bode(G,{wmin,wmax});
+semilogx(app.UIAxes2,wout,20*log10(squeeze(mag)),"LineWidth"
