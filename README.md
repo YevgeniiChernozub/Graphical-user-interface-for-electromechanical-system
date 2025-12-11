@@ -26,6 +26,7 @@ The project covers:
 ---
 
 **Block diagram of the analyzed electromechanical system**
+
 <img width="333" height="70" alt="scheme of Electromechanical system" src="https://github.com/user-attachments/assets/df8c31f4-b458-4ab5-94a7-f0cb64a61da8" />
 
 
